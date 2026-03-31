@@ -1,0 +1,117 @@
+/* Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Colors */
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --border: #dde1e9;
+  --accent: #0a7c59;
+  --text: #1a1d23;
+  --muted: #6b7280;
+  
+  /* Typography */
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  
+  /* Spacing */
+  --r: 6px;
+  --rl: 10px;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.75rem;
+}
+
+.logo {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: #f0faf5;
+}
+
+/* Drop Zone */
+.dz {
+  border: 2px dashed var(--border);
+  background: var(--surface);
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  border-radius: var(--rl);
+  transition: border-color .2s, background .2s;
+}
+
+.dz:hover {
+  border-color: var(--accent);
+  background: #f0faf5;
+}
+
+.dz input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.dz-e {
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.dz-i svg {
+  width: 44px;
+  height: 44px;
+  opacity: .25;
+  color: var(--accent);
+}
+
+.dz-tt {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .05em;
+  color: var(--text);
+}
+
+.dz-s {
+  font-size: 12px;
+  color: var(--muted);
+}
