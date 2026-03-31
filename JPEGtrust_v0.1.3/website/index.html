@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C2PA Trust Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'><path d='M9 2l2 4 4.5.7-3.25 3.15.77 4.5L9 12.1l-4.02 2.25.77-4.5L2.5 6.7 7 6z' fill='%230a7c59'/></svg>">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="logo">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#0a7c59" stroke-width="1.5">
+            <path d="M9 2l2 4 4.5.7-3.25 3.15.77 4.5L9 12.1l-4.02 2.25.77-4.5L2.5 6.7 7 6z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-n">C2PA TRUST ANALYZER</div>
+          <div class="logo-t">CONTENT AUTHENTICITY · PROVENANCE</div>
+        </div>
+      </div>
+      <div class="tr">
+        <div class="dot" id="sdkDot"></div>
+        <span class="st" id="sdkTxt">LOADING SDK…</span>
+      </div>
+    </header>
+
+    <!-- HTTP Notice -->
+    <div class="notice" id="notice">
+      ⚠ The C2PA WASM SDK requires HTTP. Run: <code>python -m http.server 8000</code>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+      <!-- File Upload -->
+      <section>
+        <div class="dz" id="dz">
+          <input type="file" id="fi" accept="image/jpeg,image/png,image/webp">
+          <div class="dz-e" id="dze">
+            <div class="dz-i">
+              <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="5" y="9" width="34" height="27" rx="3"/>
+                <circle cx="16" cy="20" r="4"/>
+                <path d="M5 30l10-9 8 7 5-5 10 7"/>
+              </svg>
+            </div>
+            <div class="dz-tt">DROP IMAGE HERE — OR CLICK TO UPLOAD</div>
+            <div class="dz-s">JPEG · PNG · WebP</div>
+          </div>
+          <div class="prev" id="prev">
+            <img class="pi" id="prevImg" alt="">
+            <div style="flex:1;min-width:0">
+              <div class="pn" id="prevName"></div>
+              <div class="pm" id="prevMeta"></div>
+              <span class="ch" id="chBtn">↺ Change image</span>
+            </div>
+          </div>
+        </div>
+        <button class="go" id="goBtn" disabled>▶ ANALYZE</button>
+      </section>
+
+      <!-- Scan Progress -->
+      <div class="scan" id="scan">
+        <div class="sl2" id="scanLbl">INITIALIZING…</div>
+        <div class="pt"><div class="pf" id="progFill"></div></div>
+        <div class="steps" id="stepList"></div>
+      </div>
+
+      <!-- Report -->
+      <div class="report" id="report"></div>
+    </main>
+
+  </div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
