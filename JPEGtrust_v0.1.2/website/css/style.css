@@ -13,6 +13,8 @@
   --accent: #0a7c59;
   --text: #1a1d23;
   --muted: #6b7280;
+  --warn: #b45309;
+  --danger: #c0392b;
   
   /* Typography */
   --mono: 'Space Mono', monospace;
@@ -21,6 +23,7 @@
   /* Spacing */
   --r: 6px;
   --rl: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
 }
 
 html {
@@ -64,6 +67,36 @@ body {
   background: #f0faf5;
 }
 
+.logo svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tr {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: background .3s;
+}
+
+.dot.ok {
+  background: var(--accent);
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+
 /* Drop Zone */
 .dz {
   border: 2px dashed var(--border);
@@ -73,11 +106,19 @@ body {
   position: relative;
   border-radius: var(--rl);
   transition: border-color .2s, background .2s;
+  box-shadow: var(--shadow);
 }
 
-.dz:hover {
+.dz:hover,
+.dz.over {
   border-color: var(--accent);
   background: #f0faf5;
+}
+
+.dz.filled {
+  border-style: solid;
+  border-color: var(--border);
+  padding: 1.25rem;
 }
 
 .dz input {
@@ -114,4 +155,76 @@ body {
 .dz-s {
   font-size: 12px;
   color: var(--muted);
+}
+
+.prev {
+  display: none;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.prev.on {
+  display: flex;
+}
+
+.pi {
+  width: 110px;
+  height: 76px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  flex-shrink: 0;
+  background: #f0f2f5;
+}
+
+.pn {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  word-break: break-all;
+  margin-bottom: 3px;
+}
+
+.pm {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ch {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.go {
+  width: 100%;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .12em;
+  padding: 15px;
+  cursor: pointer;
+  border-radius: var(--rl);
+  text-transform: uppercase;
+  transition: background .18s, opacity .18s;
+  margin-top: 1rem;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+
+.go:hover:not(:disabled) {
+  background: #0b9468;
+}
+
+.go:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  background: var(--muted);
 }

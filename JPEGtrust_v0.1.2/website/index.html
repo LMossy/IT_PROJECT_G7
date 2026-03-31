@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C2PA Trust Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="logo">
+        <span>C2PA</span>
+      </div>
+      <div class="logo-text">
+        <h2>Trust Analyzer</h2>
+        <p>Content Authenticity & Verification</p>
+      </div>
+      <div class="status">
+        <span class="status-dot" id="sdkDot"></span>
+        <span class="status-text" id="sdkTxt">Loading SDK...</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- File Upload -->
+      <section>
+        <div class="dz" id="dz">
+          <input type="file" id="fi" accept="image/jpeg,image/png,image/webp">
+          <div class="dz-content">
+            <div class="dz-icon">
+              <svg viewBox="0 0 44 44" width="44" height="44">
+                <rect x="5" y="9" width="34" height="27" rx="3"/>
+                <circle cx="16" cy="20" r="4"/>
+              </svg>
+            </div>
+            <div class="dz-text">Drop image here or click to upload</div>
+            <div class="dz-sub">JPEG · PNG · WebP</div>
+          </div>
+        </div>
+        <button class="go" id="goBtn" disabled>Analyze</button>
+      </section>
+
+      <!-- Results -->
+      <section class="report" id="report">
+        <!-- Results will be injected here -->
+      </section>
+    </main>
+
+  </div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
