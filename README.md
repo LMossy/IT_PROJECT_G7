@@ -1,4 +1,4 @@
-# C2PA Trust Analyser
+# C2PA Trust Analyzer (JPEG Trust Framework)
 
 A browser-based image provenance and authenticity analyzer using the
 [C2PA specification](https://spec.c2pa.org/specifications/specifications/2.3/specs/C2PA_Specification.html) and the official
@@ -8,8 +8,9 @@ A browser-based image provenance and authenticity analyzer using the
 
 ## Quick Start
 
+From this directory:
+
 ```bash
-# From this directory:
 python -m http.server 8000
 ```
 
@@ -23,42 +24,36 @@ Then open **http://localhost:8000** in your browser.
 ## File Structure
 
 ```
-c2pa-trust-analyzer/
-├── index.html          HTML shell — layout, emblem guide, loads app.js
+website/
 ├── css/
-│   └── style.css       All styles (CSS custom properties, light theme)
+│   └── style.css               All styles (CSS custom properties, light theme)
 ├── js/
-│   ├── data.js         Lookup tables: DST, ACTIONS, VSTATUS, EDIT_SW
-│   ├── utils.js        Pure utilities: esc(), delay(), dr(), safeJSON()
-│   ├── helpers.js      C2PA manifest accessors (snake_case SDK structure)
-│   ├── classifier.js   classifyImage() → tier + verdict
-│   ├── scorer.js       computeScore()  → evidence + signals
-│   ├── emblem.js       makeEmblem()    → inline SVG
-│   ├── renderer.js     buildReasonBullets(), buildDetailSections(), renderReport()
-│   └── app.js          SDK bootstrap, EXIF reader, UI controller (entry point)
-├── tests/
-│   ├── node_modules/       
-    │   └── ...             All the supporting modules for npm
-    ├── setup/              Babel preset for ES module transformation
-    │   ├── babel.config.cjs
-    │   ├── jest.config.cjs
-    │   ├── jest.config.js
-    │   ├── jest.setup.js
-    │   ├── package.json
-    │   ├── package-lock.json
-    │   └── setup.cjs
-│   ├── jest.setup.js       Test environment mocks (FileReader, File, DOM)
-│   ├── jest.config.js      Jest configuration for ES modules
-│   ├── package.json        Test dependencies (Jest, jsdom, babel)
-│   ├── test-analyser.js
-│   ├── test-app.js
-│   ├── test-classifier.js
-│   ├── test-emblem.js
-│   ├── test-helpers.js
-│   ├── test-renderer.js
-│   ├── test-scorer.js
-│   └── test-utils.js
-└── README.md
+│   ├── data.js                 Lookup tables: DST, ACTIONS, VSTATUS, EDIT_SW
+│   ├── utils.js                Pure utilities: esc(), delay(), dr(), safeJSON()
+│   ├── helpers.js              C2PA manifest accessors (snake_case SDK structure)
+│   ├── classifier.js           classifyImage() → tier + verdict
+│   ├── scorer.js               computeScore()  → evidence + signals
+│   ├── emblem.js               makeEmblem()    → inline SVG
+│   ├── renderer.js             buildReasonBullets(), buildDetailSections(), renderReport()
+│   └── app.js                  SDK bootstrap, EXIF reader, UI controller (entry point)
+├── testing/
+|   ├── tests/                  Test environment mocks (FileReader, File, DOM)
+|   │   ├── test-analyser.js
+│   |   ├── test-app.js
+│   |   ├── test-classifier.js
+│   |   ├── test-emblem.js
+│   |   ├── test-helpers.js
+│   |   ├── test-renderer.js
+│   |   ├── test-scorer.js
+│   |   └── test-utils.js
+|   ├── babel.config.cjs
+│   ├── jest.config.cjs
+│   ├── jest.config.js           Jest configuration for ES modules
+│   ├── jest.setup.js
+│   ├── package.json             Test dependencies (Jest, jsdom, babel)
+│   ├── package-lock.json
+│   └── setup.cjs     
+└── index.html                   HTML shell — layout, emblem guide, loads app.js
 ```
 
 All JS files use native ES modules (`export`/`import`). No build step, no bundler.
@@ -132,12 +127,14 @@ File (drop/click)
 
 ## Testing
 
-Run the test suite:
+Run the test suite in the */website/testing* directory:
 
 ```bash
 npm install
 npm test
 ```
+
+Should create a node modules folder that are the library requirements to run testing.
 
 ### Test Coverage
 
@@ -151,8 +148,6 @@ npm test
 | renderer.js | test-renderer.js | Passing |
 | scorer.js | test-scorer.js | Passing |
 | utils.js | test-utils.js | Passing |
-
-**Total:** 8 test suites | 26 tests | All passing 
 
 ---
 
