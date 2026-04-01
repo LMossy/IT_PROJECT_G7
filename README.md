@@ -38,15 +38,15 @@ c2pa-trust-analyzer/
 │   └── app.js          SDK bootstrap, EXIF reader, UI controller (entry point)
 ├── tests/
 │   ├── node_modules/       
-│   │   └── ...             All the supporting modules for npm
-│   ├── setup/              Babel preset for ES module transformation
-│   │   ├── babel.config.cjs
-│   │   ├── jest.config.cjs
-│   │   ├── jest.config.js
-│   │   ├── jest.setup.js
-│   │   ├── package.json
-│   │   ├── package-lock.json
-│   │   └── setup.cjs
+    │   └── ...             All the supporting modules for npm
+    ├── setup/              Babel preset for ES module transformation
+    │   ├── babel.config.cjs
+    │   ├── jest.config.cjs
+    │   ├── jest.config.js
+    │   ├── jest.setup.js
+    │   ├── package.json
+    │   ├── package-lock.json
+    │   └── setup.cjs
 │   ├── jest.setup.js       Test environment mocks (FileReader, File, DOM)
 │   ├── jest.config.js      Jest configuration for ES modules
 │   ├── package.json        Test dependencies (Jest, jsdom, babel)
