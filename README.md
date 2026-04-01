@@ -1,4 +1,4 @@
-# C2PA Trust Analyzer
+# C2PA Trust Analyser
 
 A browser-based image provenance and authenticity analyzer using the
 [C2PA specification](https://spec.c2pa.org/specifications/specifications/2.3/specs/C2PA_Specification.html) and the official
