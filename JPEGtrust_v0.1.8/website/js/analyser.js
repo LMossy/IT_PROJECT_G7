@@ -4,9 +4,10 @@
 // Used by all three modes: single, gallery, compare.
 // Returns a structured result object or throws.
 // ─────────────────────────────────────────────────────────────
-import { safeJSON } from './utils.js';
-import { classifyImage } from './classifier.js';
-import { computeScore }  from './scorer.js';
+import { safeJSON } from "./utils.js";
+import { evaluateImage } from "./classifier.js";
+import { computeScore } from "./scorer.js";
+import { runForensics } from "./forensics.js";
 
 /**
  * Read a File as a base64 data URL.
@@ -16,8 +17,8 @@ import { computeScore }  from './scorer.js';
 export function fileToDataURL(file) {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
-    fr.onload  = e => resolve(e.target.result);
-    fr.onerror = ()  => reject(new Error('FileReader failed'));
+    fr.onload = (e) => resolve(e.target.result);
+    fr.onerror = () => reject(new Error("FileReader failed"));
     fr.readAsDataURL(file);
   });
 }
@@ -30,14 +31,23 @@ export function fileToDataURL(file) {
  */
 export async function readExif(file, Exifr) {
   try {
-    return await Exifr.parse(file, {
-      tiff: true, exif: true, gps: true,
-      iptc: false, icc: false, jfif: false,
-      mergeOutput: true, translateKeys: true,
-      translateValues: true, reviveValues: true,
-    }) ?? {};
+    return (
+      (await Exifr.parse(file, {
+        tiff: true,
+        exif: true,
+        xmp: true,
+        gps: true,
+        iptc: true,
+        icc: false,
+        jfif: false,
+        mergeOutput: true,
+        translateKeys: true,
+        translateValues: true,
+        reviveValues: true,
+      })) ?? {}
+    );
   } catch (e) {
-    console.warn('[exifr]', e);
+    console.warn("[exifr]", e);
     return {};
   }
 }
@@ -53,7 +63,7 @@ export async function readExif(file, Exifr) {
  *   dataURL: string,
  *   mfst: object|null,
  *   exif: object,
- *   cls: object,
+ *   evalResult: object,
  *   sr: object,
  *   error: string|null
  * }>}
@@ -70,28 +80,39 @@ export async function analyseFile(file, sdk, Exifr) {
   const mfst = mfstRaw.data;
   const error = mfstRaw.error;
 
-  const cls = classifyImage(mfst, exif, file);
-  const sr  = computeScore(mfst, exif, cls);
+  // Run the multi-dimensional evaluation
+  const evalResult = evaluateImage(mfst, exif, file);
+
+  // Run scoring and forensics in parallel
+  const [sr, forensics] = await Promise.all([
+    computeScore(file, sdk, Exifr),
+    runForensics(dataURL, file.type),
+  ]);
 
   if (error && !mfst) {
-    sr.signals.unshift({ text: 'C2PA parse error: ' + error.slice(0, 100), status: 'neutral' });
+    if (sr && sr.signals) {
+      sr.signals.unshift({
+        text: "C2PA parse error: " + error.slice(0, 100),
+        status: "neutral",
+      });
+    }
   }
 
-  return { file, dataURL, mfst, exif, cls, sr, error };
+  return { file, dataURL, mfst, exif, evalResult, sr, forensics, error };
 }
 
 /** Internal: read the C2PA manifest store, guarded against WASM failures. */
 async function _readManifest(file, sdk) {
-  if (!sdk) return { data: null, error: 'SDK not available' };
+  if (!sdk) return { data: null, error: "SDK not available" };
 
   let reader = null;
   try {
     reader = await sdk.reader.fromBlob(file.type, file);
-    if (!reader || typeof reader.manifestStore !== 'function') {
+    if (!reader || typeof reader.manifestStore !== "function") {
       return { data: null, error: null };
     }
-    const raw  = await reader.manifestStore();
-    let   data = raw ? safeJSON(raw) : null;
+    const raw = await reader.manifestStore();
+    let data = raw ? safeJSON(raw) : null;
     // Empty manifest store → treat as no manifest
     if (data && (!data.manifests || Object.keys(data.manifests).length === 0)) {
       data = null;
@@ -100,8 +121,10 @@ async function _readManifest(file, sdk) {
   } catch (e) {
     return { data: null, error: e.message || String(e) };
   } finally {
-    if (reader && typeof reader.free === 'function') {
-      try { await reader.free(); } catch (_) {}
+    if (reader && typeof reader.free === "function") {
+      try {
+        await reader.free();
+      } catch (_) {}
     }
   }
 }
