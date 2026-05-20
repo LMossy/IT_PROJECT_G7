@@ -13,6 +13,7 @@ import * as Exifr     from 'https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.e
 import { esc, delay }   from './utils.js';
 import { analyseFile }  from './analyser.js';
 import { renderReport } from './renderer.js';
+import { initGallery }  from './gallery.js';
 
 // ─── DOM refs ─────────────────────────────────────────────────
 const $sdkDot = document.getElementById('sdkDot');
@@ -33,6 +34,12 @@ const $slbl  = document.getElementById('scanLbl');
 const $pf    = document.getElementById('progFill');
 const $sl    = document.getElementById('stepList');
 const $rep   = document.getElementById('report');
+
+// Mode toggle
+const $modeSingle = document.getElementById('modeSingle');
+const $modeGallery = document.getElementById('modeGallery');
+const $singleMode = document.getElementById('singleMode');
+const $galleryMode = document.getElementById('galleryMode');
 
 // ─── SDK bootstrap ────────────────────────────────────────────
 let sdk = null;
@@ -60,6 +67,27 @@ try {
 // ─── State ────────────────────────────────────────────────────
 let currentFile    = null;
 let currentDataURL = '';
+let displayMode    = 'regular'; // 'regular', 'frame', 'icon'
+
+// ─── Mode toggle ───────────────────────────────────────────────
+$modeSingle.addEventListener('click', () => {
+  $modeSingle.classList.add('active');
+  $modeGallery.classList.remove('active');
+  $singleMode.style.display = 'block';
+  $galleryMode.style.display = 'none';
+});
+
+$modeGallery.addEventListener('click', () => {
+  $modeGallery.classList.add('active');
+  $modeSingle.classList.remove('active');
+  $galleryMode.style.display = 'block';
+  $singleMode.style.display = 'none';
+
+  // Initialize gallery if not already done
+  if (sdk && Exifr) {
+    initGallery(sdk, Exifr);
+  }
+});
 
 // ─── Event Listeners ──────────────────────────────────────────
 $dz.addEventListener('dragover',  e => { e.preventDefault(); $dz.classList.add('over'); });
@@ -73,6 +101,18 @@ $fi.addEventListener('change',  () => onFile($fi.files[0]));
 $ch.addEventListener('click',   e  => { e.stopPropagation(); reset(); });
 $go.addEventListener('click',   ()  => analyse());
 
+// Display mode selection
+document.querySelectorAll('input[name="displayMode"]').forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    displayMode = e.target.value;
+    // Update existing report if visible
+    const reportEl = document.getElementById('report');
+    if (reportEl.classList.contains('on') && currentFile) {
+      updateDisplayMode();
+    }
+  });
+});
+
 // ─── File Handling ────────────────────────────────────────────
 function onFile(file) {
   if (!file) return;
@@ -84,12 +124,12 @@ function onFile(file) {
 
   $pnm.textContent   = file.name;
   $pmeta.textContent = `${(file.size/1024).toFixed(1)} KB · ${file.type||'unknown'} · ${new Date(file.lastModified).toLocaleDateString()}`;
-  
+
   $dze.style.display = 'none';
   $prev.classList.add('on');
   $dz.classList.add('filled');
   $go.disabled = false;
-  
+
   $rep.classList.remove('on');
   $scan.classList.remove('on');
 }
@@ -125,9 +165,9 @@ async function analyse() {
         const p = document.getElementById(`st${cur-1}`);
         p?.classList.remove('active'); p?.classList.add('done');
       }
-      const c = document.getElementById(`st${cur}`); 
+      const c = document.getElementById(`st${cur}`);
       if(c) c.classList.add('active');
-      
+
       $pf.style.width   = Math.round(((cur+1)/STEPS.length)*100) + '%';
       $slbl.textContent = STEPS[cur].toUpperCase() + '…';
       cur++;
@@ -151,7 +191,7 @@ async function analyse() {
 
     // Show Report
     $scan.classList.remove('on');
-    renderReport(result.file, result.dataURL, result.mfst, result.exif, result.cls, result.sr, reset);
+    renderReport(result.file, result.dataURL, result.mfst, result.exif, result.cls, result.sr, reset, displayMode);
 
   } catch (err) {
     console.error('[analyse]', err);
@@ -170,15 +210,34 @@ async function analyse() {
 
 // ─── Reset ────────────────────────────────────────────────────
 function reset() {
-  currentFile = null; 
+  currentFile = null;
   currentDataURL = '';
-  $fi.value = ''; 
+  $fi.value = '';
   $pim.src = '';
   $prev.classList.remove('on');
   $dze.style.display = '';
   $dz.classList.remove('filled');
   $go.disabled = true;
-  $rep.classList.remove('on'); 
+  $rep.classList.remove('on');
   $rep.innerHTML = '';
   $scan.classList.remove('on');
+}
+
+// ─── Update Display Mode ─────────────────────────────────────
+function updateDisplayMode() {
+  const imageWrap = document.querySelector('.rpt-image-wrap');
+  const iconDataContainer = document.querySelector('.icon-data-container');
+
+  if (displayMode === 'frame') {
+    imageWrap?.classList.add('frame-mode');
+    imageWrap?.classList.remove('icon-mode');
+    iconDataContainer?.classList.remove('on');
+  } else if (displayMode === 'icon') {
+    imageWrap?.classList.add('icon-mode');
+    imageWrap?.classList.remove('frame-mode');
+    iconDataContainer?.classList.add('on');
+  } else {
+    imageWrap?.classList.remove('frame-mode', 'icon-mode');
+    iconDataContainer?.classList.remove('on');
+  }
 }
