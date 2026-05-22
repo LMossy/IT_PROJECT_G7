@@ -179,5 +179,4 @@ Pixel-level checks are probabilistic indicators, not proof. They are shown as su
 Analysis runs in the browser. The local HTTP server only serves the static files in this folder.
 
 ## License
-
-This project is developed for educational purposes as part of UNSW Canberra's ZEIT 3118 Project Assignment. C2PA-related trademarks belong to the Coalition for Content Provenance and Authenticity.
+placeholder
